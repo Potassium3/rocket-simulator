@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rocket Simulator</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+  <div class="input input-range">
+    Zoom
+    <div>
+      <div id="input-body-shape-zoom-slider"></div>
+      <input id="input-body-shape-zoom" type="range" min="0" max="100">
+      <div></div>
+    </div>
+  </div>
+  <header>
+    <h1>Rocket Simulator</h1>
+    <div id="view">
+      <div class="img-view"></div>
+      View
+      <input type="radio" name="menu" id="r-view">
+    </div>
+    <div id="body">
+      <div class="img-body"></div>
+      Body
+      <input type="radio" name="menu" id="r-body" checked>
+    </div>
+    <div id="fins">
+      <div class="img-fins"></div>
+      Fins
+      <input type="radio" name="menu" id="r-fins">
+    </div>
+    <div id="thrust">
+      <div class="img-thrust"></div>
+      Thrust
+      <input type="radio" name="menu" id="r-thrust">
+    </div>
+    <div id="launch">
+      <div class="img-go"></div>
+      Launch
+      <input type="radio" name="menu" id="r-launch">
+    </div>
+  </header>
+  <main>
+    <section id="p-view">
+      <div class="panel">
+        <h2>3D View</h2>
+      </div>
+    </section>
+    <section id="p-body">
+      <div class="panel">
+        <h2>Materials</h2>
+      </div>
+      <div class="panel">
+        <h2>Shape</h2>
+        <p>Dimensions in mm.</p>
+        <div class="rocket rocket-long">
+          <!-- Javascript -->
+        </div>
+        <p>Total mass: 0.200kg</p>
+      </div>
+      <div class="panel">
+        <h2>Stability</h2>
+      </div>
+    </section>
+    <section id="p-fins">
+      <div class="panel">
+        <h2>Materials</h2>
+      </div>
+      <div class="panel">
+        <h2>Shape</h2>
+        <div class="rocket rocket-long fins">
+          <!-- Javascript -->
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Angle</h2>
+        <div class="input input-range">
+          Fins
+          <div>
+            <div id="input-fins-angle-fins-slider"></div>
+            <input id="input-fins-angle-fins" type="range" min="0" max="6">
+            <div></div>
+          </div>
+        </div>
+        <div class="input input-range">
+          Thickness
+          <div>
+            <div id="input-fins-angle-thickness-slider"></div>
+            <input id="input-fins-angle-thickness" type="range" min="0" max="100">
+            <div></div>
+          </div>
+        </div>
+        <div class="rocket rocket-cross">
+          <!-- Javascript -->
+        </div>
+      </div>
+    </section>
+    <section id="p-thrust">
+      <div class="panel">
+        <h2>Launch Force</h2>
+      </div>
+      <div class="panel">
+        <h2>Engine</h2>
+      </div>
+      <div class="panel">
+        <h2>Stages</h2>
+      </div>
+    </section>
+    <section id="p-launch">
+      <div class="panel">
+        <h2>Prerequisites</h2>
+      </div>
+      <div class="panel">
+        <h2>Stages</h2>
+      </div>
+      <div class="panel">
+        <h2>Graph</h2>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

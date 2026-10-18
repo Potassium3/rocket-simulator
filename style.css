@@ -1,0 +1,368 @@
+* {
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  --red: #ff6505;
+  --white: #ffffff;
+  --grey: #444444;
+  background-color: black;
+}
+
+header {
+  width: 100%;
+  height: 60px;
+  padding: 15px 20px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  border-bottom: 1px solid var(--grey);
+  border-top: 1px solid var(--grey);
+}
+
+header>h1 {
+  display: flex;
+  padding-top: 7px;
+  height: 100%;
+  line-height: 100%;
+  margin: 0;
+  font-size: 15pt;
+  font-weight: 300;
+}
+
+header>div {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  height: calc(100% + 1px);
+  width: 80px;
+  padding-bottom: 3px;
+  font-family: Arial, Helvetica, sans-serif;
+  transition: transform 0.2s;
+}
+
+header>div:hover:not(:has(:checked)) {
+  transform: translateY(-2px);
+}
+
+header>div:has(:checked) {
+  border-bottom: 2px solid var(--red);
+}
+
+header>div>div {
+  /* icons */
+  background-color: var(--white);
+  width: 20px;
+  height: 20px;
+}
+
+header>div:has(:checked)>div {
+  /* icons */
+  background-color: var(--red);
+}
+
+header>div>input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Images to be replaced on GitHub */
+
+.img-view {
+  clip-path: polygon(100% 20%, 93% 27%, 7% 27%, 7% 73%, 93% 73%, 93% 27%, 100% 20%, 100% 80%, 0% 80%, 0% 20%);
+}
+
+.img-body {
+  clip-path: polygon(100% 0%, 90% 10%, 69% 17%, 10% 75%, 25% 90%, 83% 31%, 90% 10%, 100% 0%, 90% 35%, 25% 100%, 0% 75%, 65% 10%);
+}
+
+.img-fins {
+  clip-path: polygon(100% 0%, 90% 10%, 69% 17%, 40% 45%, 13% 58%, 42% 87%, 55% 60%, 83% 31%, 90% 10%, 100% 0%, 90% 35%, 60% 65%, 45% 100%, 0% 55%, 35% 40%, 65% 10%);
+}
+
+.img-thrust {
+  clip-path: polygon(100% 0%, 90% 10%, 69% 17%, 40% 45%, 13% 58%, 42% 87%, 55% 60%, 83% 31%, 90% 10%, 100% 0%, 90% 35%, 60% 65%, 45% 100%, 25% 80%, 12% 94%, 31% 94%, 25% 100%, 0% 100%, 0% 75%, 6% 69%, 6% 88%, 20% 75%, 0% 55%, 35% 40%, 65% 10%);
+}
+
+.img-go {
+  clip-path: polygon(46% 93%, 46% 13%, 13% 42%, 13% 32%, 50% 0%, 87% 32%, 87% 42%, 54% 13%, 54% 93%, 100% 93%, 100% 100%, 0% 100%, 0% 93%);
+}
+
+main {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 80px);
+}
+
+main>section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  /* Flex */
+}
+
+main>section>.panel {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+main>section>.panel:not(:first-child) {
+  border-left: 1px solid var(--grey);
+}
+
+html:has(#r-view:checked) section#p-view {
+  display: flex;
+}
+
+html:has(#r-body:checked) section#p-body {
+  display: flex;
+}
+
+html:has(#r-fins:checked) section#p-fins {
+  display: flex;
+}
+
+html:has(#r-thrust:checked) section#p-thrust {
+  display: flex;
+}
+
+html:has(#r-launch:checked) section#p-launch {
+  display: flex;
+}
+
+.panel>h2 {
+  font-size: 15pt;
+  color: var(--red);
+  margin: 0;
+}
+
+.panel>p {
+  margin: 0;
+}
+
+.input {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  height: 20px;
+}
+
+.input>div {
+  position: absolute;
+  width: 50%;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+
+.input>div>input {
+  position: absolute;
+  width: 98%;
+  left: 1%;
+  opacity: 0;
+  z-index: 3;
+}
+
+.input>div>div:first-child {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  background-color: var(--red);
+  border-radius: 100%;
+  z-index: 2;
+}
+
+.input>div>div:last-child {
+  position: absolute;
+  top: 5px;
+  height: 10px;
+  width: 100%;
+  background-color: var(--grey);
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.panel>.rocket {
+  position: relative;
+  width: 100%;
+  min-width: 200px;
+  height: 100%;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.rocket .piece {
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid var(--grey);
+  border-left: 1px solid var(--grey);
+  padding: 0 40px;
+  min-width: fit-content;
+  overflow: hidden;
+  --w: 100%;
+}
+
+rocket .piece:has(:focus) {
+  overflow: visible;
+}
+
+.rocket .piece:first-child {
+  border-top: 1px solid var(--grey);
+}
+
+.rocket .top-line {
+  position: absolute;
+  top: 0;
+  height: 2px;
+  background-color: var(--red);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rocket .bottom-line {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background-color: var(--red);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rocket .left-line {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.rocket .right-line {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.rocket .left-line.invert {
+  transform: scaleX(-1);
+}
+
+.rocket .right-line.invert {
+  transform: scaleX(-1);
+}
+
+.rocket .left-line>div {
+  position: absolute;
+  right: 0;
+  width: hypot(var(--w), var(--h));
+  height: 2px;
+  background-color: var(--red);
+  transform-origin: top right;
+  transform: rotate(calc(-1 * atan2(var(--h), var(--w))));
+}
+
+.rocket .right-line>div {
+  position: absolute;
+  left: 0;
+  width: hypot(var(--w), var(--h));
+  height: 2px;
+  background-color: var(--red);
+  transform-origin: top left;
+  transform: rotate(atan2(var(--h), var(--w)));
+}
+
+.rocket .rocket-input:focus {
+  border: 1px solid white;
+  background-color: black;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.rocket .left-input {
+  position: absolute;
+  z-index: 999;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  width: 60px;
+  height: fit-content;
+  padding: 5px;
+  outline: none;
+}
+
+.rocket .bottomright-input {
+  position: absolute;
+  z-index: 999;
+  bottom: 0;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  width: 50px;
+  height: fit-content;
+  text-align: right;
+  padding: 5px;
+  outline: none;
+}
+
+.rocket .topright-input {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  width: 50px;
+  height: fit-content;
+  text-align: right;
+  padding: 5px;
+  outline: none;
+}
+
+.rocket .cross-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  border: 2px solid var(--red);
+  border-radius: 100%;
+}
+
+.rocket .cross-circle.dashed {
+  border: 2px dashed var(--red);
+}
+
+.rocket .cross-fin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 2px;
+  background-color: var(--red);
+  transform-origin: left;
+}
