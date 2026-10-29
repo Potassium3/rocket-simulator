@@ -9,7 +9,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  --red: #ff6505;
+  --red: #11e2a3; /* Not red anymore! */
   --white: #ffffff;
   --grey: #444444;
   background-color: black;
@@ -23,7 +23,6 @@ header {
   flex-direction: row;
   justify-content: left;
   border-bottom: 1px solid var(--grey);
-  border-top: 1px solid var(--grey);
 }
 
 header>h1 {
@@ -110,7 +109,8 @@ header>div>input {
 main {
   position: relative;
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 120px);
+  border-bottom: 1px solid var(--grey);
 }
 
 main>section {
@@ -225,11 +225,12 @@ html:has(#r-launch:checked) section#p-launch {
   border-left: 1px solid var(--grey);
   padding: 0 40px;
   min-width: fit-content;
+  min-height: 12px;
   overflow: hidden;
   --w: 100%;
 }
 
-rocket .piece:has(:focus) {
+.rocket .piece:has(:focus) {
   overflow: visible;
 }
 
