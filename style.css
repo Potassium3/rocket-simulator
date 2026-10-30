@@ -304,7 +304,8 @@ html:has(#r-launch:checked) section#p-launch {
 }
 
 .rocket .right-line-fin>div,
-.rocket .left-line-fin>div {
+.rocket .left-line-fin>div
+.rocket .bottom-line-fin {
   background-color: var(--red) !important;
 }
 

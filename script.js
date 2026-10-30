@@ -67,6 +67,7 @@ function renderRocketLong(data, zoom=1) {
           difference = Math.abs(topFinWidth - bottomFinWidth);
           invert = bottomFinWidth < topFinWidth ? "invert" : "";
           pieceElem.innerHTML += `
+          <div class="bottom-line bottom-line-fin" style="width: ${(bottomFinWidth)*zoom}mm"></div>
           <div class="left-line left-line-fin ${invert}" style=
           "left: calc(50% - ${Math.max(topFinWidth, bottomFinWidth)*zoom/2}mm); width: ${difference*zoom/2}mm; --w: ${difference*zoom/2}mm; --h: ${piece.height*zoom}mm;"
           ><div></div></div>
