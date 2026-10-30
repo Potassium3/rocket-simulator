@@ -30,7 +30,7 @@ let rocket = {
     },
   ],
   fins: {
-    number: 5,
+    number: 4,
     position: 3,
     shape: "triangle",
     thickness: 10,
@@ -43,11 +43,16 @@ function renderRocketLong(data, zoom=1) {
     if (elem.classList.contains("fins")) {
       // Just elements that aren't input
       elem.innerHTML = "";
-      let i = 0;
-      for (let piece of data.shape) {
+      for (let i=0; i<data.shape.length; i++) {
+        const iCopy = i;
+        let piece = data.shape[i];
         let difference = Math.abs(piece.bottomWidth-piece.topWidth);
         let invert = piece.bottomWidth < piece.topWidth ? "invert" : "";
-        elem.innerHTML += `<div class="piece" style="height: ${piece.height*zoom}mm;">
+        let pieceElem = document.createElement("div");
+        pieceElem.className = "piece";
+        pieceElem.style = `height: ${piece.height*zoom}mm; cursor: pointer;`;
+        
+        pieceElem.innerHTML = `
           <div class="top-line" style="width: ${piece.topWidth*zoom}mm"></div>
           <div class="bottom-line" style="width: ${piece.bottomWidth*zoom}mm"></div>
           <div class="left-line ${invert}" style=
@@ -55,10 +60,27 @@ function renderRocketLong(data, zoom=1) {
           ><div></div></div>
           <div class="right-line ${invert}" style=
           "left: calc(50% + ${Math.min(piece.topWidth, piece.bottomWidth)*zoom/2}mm); width: ${difference*zoom/2}mm; --w: ${difference*zoom/2}mm; --h: ${piece.height*zoom}mm;"
+          ><div></div></div>`;
+        if (i == data.fins.position) {
+          let topFinWidth = piece.topWidth;
+          let bottomFinWidth = piece.bottomWidth + data.fins.bottomWidth;
+          difference = Math.abs(topFinWidth - bottomFinWidth);
+          invert = bottomFinWidth < topFinWidth ? "invert" : "";
+          pieceElem.innerHTML += `
+          <div class="left-line left-line-fin ${invert}" style=
+          "left: calc(50% - ${Math.max(topFinWidth, bottomFinWidth)*zoom/2}mm); width: ${difference*zoom/2}mm; --w: ${difference*zoom/2}mm; --h: ${piece.height*zoom}mm;"
           ><div></div></div>
-        </div>`
-        i++;
+          <div class="right-line right-line-fin ${invert}" style=
+          "left: calc(50% + ${Math.min(topFinWidth, bottomFinWidth)*zoom/2}mm); width: ${difference*zoom/2}mm; --w: ${difference*zoom/2}mm; --h: ${piece.height*zoom}mm;"
+          ><div></div></div>`;
+        }
+        pieceElem.addEventListener("click", function () {
+          rocket.fins.position = iCopy;
+          renderRocket(rocket);
+        });
+        elem.appendChild(pieceElem);
       }
+      
     } else {
       // Create elements
       elem.innerHTML = "";

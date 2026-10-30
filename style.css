@@ -109,7 +109,7 @@ header>div>input {
 main {
   position: relative;
   width: 100%;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 90px);
   border-bottom: 1px solid var(--grey);
 }
 
@@ -279,21 +279,33 @@ html:has(#r-launch:checked) section#p-launch {
 .rocket .left-line>div {
   position: absolute;
   right: 0;
-  width: hypot(var(--w), var(--h));
-  height: 2px;
+  width: 100%;
+  height: 100%;
   background-color: var(--red);
-  transform-origin: top right;
-  transform: rotate(calc(-1 * atan2(var(--h), var(--w))));
+  clip-path: polygon( 100% 0, calc(100% - 3px) 0, 0 100%, 3px 100%);
+  min-width: 2px;
 }
 
 .rocket .right-line>div {
   position: absolute;
   left: 0;
-  width: hypot(var(--w), var(--h));
-  height: 2px;
+  width: 100%;
+  height: 100%;
   background-color: var(--red);
-  transform-origin: top left;
-  transform: rotate(atan2(var(--h), var(--w)));
+  clip-path: polygon( 0 0, 3px 0, 100% 100%, calc(100% - 3px) 100%);
+  min-width: 2px;
+}
+
+.rocket.fins .top-line,
+.rocket.fins .bottom-line,
+.rocket.fins .left-line>div,
+.rocket.fins .right-line>div {
+  background-color: white;
+}
+
+.rocket .right-line-fin>div,
+.rocket .left-line-fin>div {
+  background-color: var(--red) !important;
 }
 
 .rocket .rocket-input:focus {
@@ -351,12 +363,12 @@ html:has(#r-launch:checked) section#p-launch {
   left: 50%;
   transform: translate(-50%, -50%);
   aspect-ratio: 1;
-  border: 2px solid var(--red);
+  border: 2px solid white;
   border-radius: 100%;
 }
 
 .rocket .cross-circle.dashed {
-  border: 2px dashed var(--red);
+  border: 2px dashed white;
 }
 
 .rocket .cross-fin {
