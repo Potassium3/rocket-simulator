@@ -63,7 +63,7 @@ function renderRocketLong(data, zoom=1) {
           ><div></div></div>`;
         if (i == data.fins.position) {
           let topFinWidth = piece.topWidth;
-          let bottomFinWidth = piece.bottomWidth + data.fins.bottomWidth;
+          let bottomFinWidth = piece.bottomWidth + data.fins.bottomWidth*2;
           difference = Math.abs(topFinWidth - bottomFinWidth);
           invert = bottomFinWidth < topFinWidth ? "invert" : "";
           pieceElem.innerHTML += `
@@ -87,9 +87,13 @@ function renderRocketLong(data, zoom=1) {
       elem.innerHTML = "";
       let i = 0;
       for (let piece of data.shape) {
+        let iCopy = i;
         let difference = Math.abs(piece.bottomWidth-piece.topWidth);
         let invert = piece.bottomWidth < piece.topWidth ? "invert" : "";
-        elem.innerHTML += `<div class="piece" style="height: ${piece.height*zoom}mm;">
+        let pieceElem = document.createElement("div");
+        pieceElem.className = "piece";
+        pieceElem.style = `height: ${piece.height*zoom}mm; cursor: pointer;`;
+        pieceElem.innerHTML += `
           <div class="top-line" style="width: ${piece.topWidth*zoom}mm"></div>
           <div class="bottom-line" style="width: ${piece.bottomWidth*zoom}mm"></div>
           <div class="left-line ${invert}" style=
@@ -100,8 +104,12 @@ function renderRocketLong(data, zoom=1) {
           ><div></div></div>
           <input data-id="piece-le-${i}" class="rocket-input left-input" value="${piece.height}">
           <input data-id="piece-tr-${i}" class="rocket-input topright-input" value="${piece.topWidth}">
-          <input data-id="piece-br-${i}" class="rocket-input bottomright-input" value="${piece.bottomWidth}">
-        </div>`
+          <input data-id="piece-br-${i}" class="rocket-input bottomright-input" value="${piece.bottomWidth}">`;
+        pieceElem.addEventListener("click", function () {
+          rocket.fins.position = iCopy;
+          renderRocket(rocket);
+        });
+        elem.appendChild(pieceElem);
         i++;
       }
       
@@ -155,7 +163,16 @@ function renderRocketCross(data, zoom=1) {
     // Create fins
     let finNumber = data.fins.number;
     for (let i=0; i<finNumber; i++) {
-      elem.innerHTML += `<div class="cross-fin" style="transform: translateY(-50%) rotate(${i*360/finNumber}deg); width:${data.fins.bottomWidth*zoom}mm; height: ${data.fins.thickness*zoom/10}mm;"></div>`;
+      elem.innerHTML += `<div class="cross-fin" style="
+        transform: translateY(-50%) rotate(${i*360/finNumber}deg) translateX(${data.shape[data.fins.position].bottomWidth*zoom/2}mm);
+        width:${data.fins.bottomWidth*zoom}mm;
+        height: ${(data.fins.thickness)*zoom}mm;
+      "></div>`;
+      elem.innerHTML += `<div class="cross-fin-fade" style="
+        transform: translateY(-50%) rotate(${i*360/finNumber}deg) translateX(${data.shape[data.fins.position].topWidth*zoom/2}mm);
+        width:${(data.fins.bottomWidth + data.shape[data.fins.position].bottomWidth/2 - data.shape[data.fins.position].topWidth/2)*zoom}mm;
+        height: ${(data.fins.thickness)*zoom}mm;
+      "></div>`;
     }
   })
 }
@@ -190,7 +207,14 @@ document.getElementById("input-fins-angle-fins").addEventListener("input", funct
 document.getElementById("input-fins-angle-thickness").addEventListener("input", function() {
   document.getElementById("input-fins-angle-thickness-slider").style.left = this.value+"%";
   document.getElementById("input-fins-angle-thickness-slider").style.transform = "translateX(-"+this.value+"%)";
-  rocket.fins.thickness = this.value;
+  rocket.fins.thickness = Number(this.value);
+  renderRocket(rocket);
+});
+
+document.getElementById("input-fins-shape-width").addEventListener("input", function() {
+  document.getElementById("input-fins-shape-width-slider").style.left = this.value+"%";
+  document.getElementById("input-fins-shape-width-slider").style.transform = "translateX(-"+this.value+"%)";
+  rocket.fins.bottomWidth = Number(this.value);
   renderRocket(rocket);
 });
 

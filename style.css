@@ -214,8 +214,15 @@ html:has(#r-launch:checked) section#p-launch {
   width: 100%;
   min-width: 200px;
   height: 100%;
-  overflow: auto;
   scrollbar-width: none;
+}
+
+.rocket-cross {
+  overflow: hidden;
+}
+
+.rocket-long {
+  overflow: auto;
 }
 
 .rocket .piece {
@@ -296,17 +303,19 @@ html:has(#r-launch:checked) section#p-launch {
   min-width: 2px;
 }
 
-.rocket.fins .top-line,
-.rocket.fins .bottom-line,
-.rocket.fins .left-line>div,
-.rocket.fins .right-line>div {
+.rocket.fins .top-line:not(.top-line-fin),
+.rocket.fins .bottom-line:not(.bottom-line-fin),
+.rocket.fins .left-line:not(.left-line-fin)>div,
+.rocket.fins .right-line:not(.right-line-fin)>div {
   background-color: white;
+  z-index: 1;
 }
 
-.rocket .right-line-fin>div,
-.rocket .left-line-fin>div
-.rocket .bottom-line-fin {
+.rocket.fins .right-line-fin>div,
+.rocket.fins .left-line-fin>div
+.rocket.fins .bottom-line-fin {
   background-color: var(--red) !important;
+  z-index: 0;
 }
 
 .rocket .rocket-input:focus {
@@ -379,4 +388,40 @@ html:has(#r-launch:checked) section#p-launch {
   height: 2px;
   background-color: var(--red);
   transform-origin: left;
+}
+
+.rocket .cross-fin-fade {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 2px;
+  background-color: var(--red);
+  opacity: 0.5;
+  transform-origin: left;
+}
+
+.graph {
+  position: relative;
+  border: 1px solid var(--grey);
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.graph>.graph-body {
+  position: absolute;
+  border-left: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+  width: calc(100% - 30px);
+  top: 0;
+  right: 0;
+  aspect-ratio: 1;
+}
+
+.graph>.x-label {
+  position: absolute;
+  width: calc(100% - 30px);
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  aspect-ratio: 1;
 }
