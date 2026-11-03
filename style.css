@@ -404,24 +404,63 @@ html:has(#r-launch:checked) section#p-launch {
   position: relative;
   border: 1px solid var(--grey);
   width: 100%;
+  max-width: 500px;
   aspect-ratio: 1;
+  user-select: none;
 }
 
 .graph>.graph-body {
   position: absolute;
   border-left: 2px solid var(--white);
   border-bottom: 2px solid var(--white);
-  width: calc(100% - 30px);
-  top: 0;
-  right: 0;
+  width: calc(100% - 50px);
+  bottom: 30px;
+  right: 20px;
   aspect-ratio: 1;
+}
+
+.graph>svg {
+  position: absolute;
+  border-left: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+  width: calc(100% - 50px);
+  bottom: 30px;
+  right: 20px;
+  aspect-ratio: 1;
+}
+
+.graph>svg>path {
+  stroke-width: 3px;
+  stroke: var(--red);
+}
+
+.graph>.graph-body>div {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--red);
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
 }
 
 .graph>.x-label {
   position: absolute;
-  width: calc(100% - 30px);
   right: 0;
   bottom: 0;
+  width: 100%;
+  height: 18px;
+  text-align: center;
+  aspect-ratio: 1;
+}
+
+.graph>.y-label {
+  position: absolute;
+  left: 18px;
+  bottom: calc(100% - 30px);
+  width: 100%;
+  height: 18px;
+  transform: rotate(90deg);
+  transform-origin: top left;
   text-align: center;
   aspect-ratio: 1;
 }

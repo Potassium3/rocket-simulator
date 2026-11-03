@@ -38,6 +38,8 @@ let rocket = {
   },
 };
 
+// Interface and graphics
+
 function renderRocketLong(data, zoom=1) {
   document.querySelectorAll(".rocket-long").forEach((elem) => {
     if (elem.classList.contains("fins")) {
@@ -184,6 +186,136 @@ function renderRocket(data) {
   renderRocketCross(data, zoom1); // Cross-section view, fins
 }
 
+function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
+  document.querySelector("#graph-rocket>.x-label").innerText = xName;
+  document.querySelector("#graph-rocket>.y-label").innerText = yName;
+  let xMax = 0;
+  let yMax = 0;
+  for (let i=0; i<xList.length; i++) {
+    if (xList[i] > xMax) {
+      xMax = xList[i];
+    }
+    if (yList[i] > yMax) {
+      yMax = yList[i];
+    }
+  }
+  let graphBody = document.querySelector("#graph-rocket>.graph-body");
+  let graphSVG = document.querySelector("#graph-rocket>svg");
+  const scale = graphBody.clientWidth;
+  graphSVG.style.height = scale+"px";
+  graphBody.style.height = scale+"px";
+  for (let i=0; i<xList.length; i++) {
+    let point = document.createElement("div");
+    let y = (1-yList[i]/yMax)*scale;
+    let x = (xList[i]/xMax)*scale;
+    point.style.top = y+"px";
+    point.style.left = x+"px";
+    graphBody.appendChild(point);
+    // Draw lines
+    if (i > 0) {
+      let y2 = (1-yList[i-1]/yMax)*scale;
+      let x2 = (xList[i-1]/xMax)*scale;
+      graphSVG.innerHTML += `<path d="M${x},${y} L${x2},${y2}"></path>`;
+    }
+  }
+}
+
+// Simulator
+
+function simulate(data) {
+  const timeSteps = 30;
+  const timeStep = 0.1; // s
+  const speedOfSound = 343; // m s^-1
+
+  let maxRadius = 0;
+  for (let piece of data.shape) {
+    if (piece.topWidth > maxRadius) {maxRadius = piece.topWidth;}
+    if (piece.bottomWidth > maxRadius) {maxRadius = piece.bottomWidth;}
+  }
+  maxRadius *= 0.0005; // Convert to m and actually be a radius not a diameter
+  let referenceArea = Math.PI * maxRadius * maxRadius;
+
+  let dragCoefficient = 0;
+  let superDragCoefficient = 0;
+  // Calculate drag coefficient
+  for (let piece of data.shape) {
+    let difference = Math.abs(piece.topWidth - piece.bottomWidth);
+    let angleRelativeToCentreLine = Math.atan(difference/2 / piece.height);
+    // Drag coefficient calculations
+    if (piece.topWidth == 0) {
+      // Cone
+      superDragCoefficient += 2 * Math.sin(angleRelativeToCentreLine)**2;
+      dragCoefficient += 0.15;
+      
+    } else if (piece.topWidth == piece.bottomWidth) {
+      // Cylinder
+      let totalSA = Math.PI * piece.topWidth/1000 * piece.height/1000; // A = 2piRL
+      const skinFrictionCoefficient = 0.004;
+      dragCoefficient += skinFrictionCoefficient * totalSA / referenceArea;
+      superDragCoefficient += skinFrictionCoefficient * totalSA / referenceArea;
+    } else {
+      // Frustum
+      if (piece.bottomWidth > piece.topWidth) {
+        superDragCoefficient += 2 * Math.sin(angleRelativeToCentreLine)**2;
+        dragCoefficient += 0.15;
+      } else {
+        dragCoefficient -= 0.1
+        superDragCoefficient -= 0.1
+      }
+    }
+  }
+  // Base drag
+  dragCoefficient += 0.029/Math.sqrt(dragCoefficient); // Approx 0.12 or 0.15
+
+  // Simulate the time steps
+  let x = 0;
+  let y = 0;
+  let xVel = 20; // m s^-1 - CHANGE THIS!!!
+  let yVel = 20;
+  let mass = 0.1; // kg - CHANGE THIS!!!
+
+  // Initial results
+  let results = {
+    x: [x],
+    y: [y],
+    xvel: [xVel],
+    yvel: [yVel],
+    dragF: [-1],
+    time: [0],
+    velocity: [Math.hypot(20, 20)],
+  }
+  for (let i=0; i<timeSteps; i++) {
+    let t = i * timeStep;
+    let airDensity = 1.225; // kg m^-3 - will change at each time step
+    let velocity = Math.hypot(xVel, yVel);
+    let angle = Math.atan(yVel / xVel);
+    let dragForce = 0.5 * airDensity * velocity**2 * dragCoefficient * referenceArea;
+    let resultantForceX = 0;
+    let resultantForceY = 0;
+    // Thrust
+    // Not applicable
+    // Drag force
+    resultantForceX -= Math.cos(angle)*dragForce;
+    resultantForceY -= Math.sin(angle)*dragForce;
+    // Gravity
+    resultantForceY -= 9.8 * mass;
+    xVel += (resultantForceX / mass) * timeStep; // a = F / m
+    yVel += (resultantForceY / mass) * timeStep; // a = F / m
+    x += xVel * timeStep;
+    y += yVel * timeStep;
+    veloctiy = Math.hypot(xVel, yVel);
+    results.x.push(x);
+    results.y.push(y);
+    results.xvel.push(xVel);
+    results.yvel.push(yVel);
+    results.dragF.push(dragForce);
+    results.velocity.push(velocity);
+    results.time.push(t);
+  }
+  console.log(results.x);
+  plotGraph("x", "y", results.x, results.y);
+}
+
 // Event listeners
 
 document.getElementById("input-body-shape-zoom").addEventListener("input", function() {
@@ -221,3 +353,5 @@ document.getElementById("input-fins-shape-width").addEventListener("input", func
 // Render the rockets
 
 renderRocket(rocket);
+
+simulate(rocket);

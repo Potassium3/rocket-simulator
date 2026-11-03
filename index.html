@@ -18,7 +18,7 @@
     <div id="body">
       <div class="img-body"></div>
       Body
-      <input type="radio" name="menu" id="r-body" checked>
+      <input type="radio" name="menu" id="r-body">
     </div>
     <div id="fins">
       <div class="img-fins"></div>
@@ -33,7 +33,7 @@
     <div id="launch">
       <div class="img-go"></div>
       Launch
-      <input type="radio" name="menu" id="r-launch">
+      <input type="radio" name="menu" id="r-launch" checked>
     </div>
   </header>
   <main>
@@ -60,7 +60,7 @@
     </section>
     <section id="p-fins">
       <div class="panel">
-        <h2>Materials</h2>
+        <h2>Material</h2>
       </div>
       <div class="panel">
         <h2>Shape</h2>
@@ -109,29 +109,26 @@
     </section>
     <section id="p-thrust">
       <div class="panel">
-        <h2>Launch Force</h2>
-      </div>
-      <div class="panel">
-        <h2>Engine</h2>
+        <h2>Forces</h2>
+        <p>Not implemented yet. Launch force and engine thrust.</p>
       </div>
       <div class="panel">
         <h2>Stages</h2>
+        <p>Not implemented yet.</p>
       </div>
     </section>
     <section id="p-launch">
       <div class="panel">
-        <h2>Prerequisites</h2>
-      </div>
-      <div class="panel">
-        <h2>Stages</h2>
-      </div>
-      <div class="panel">
         <h2>Graph</h2>
-        <div class="graph">
+        <div class="graph" id="graph-rocket">
           <div class="graph-body"></div>
           <div class="x-label">X-axis</div>
-          <div class="y-label"></div>
+          <div class="y-label">Y-axis</div>
+          <svg></svg>
         </div>
+        <p>Choose x axis.</p>
+        <p>Choose y axis.</p>
+        <p>Draw button.</p>
       </div>
     </section>
   </main>
