@@ -448,11 +448,10 @@ button {
 
 .graph>.graph-body>div.gridline.h {
   position: absolute;
-  width: calc(100% + 20px);
+  width: 100%;
   height: 2px;
   left: 0;
   background-color: var(--grey);
-  transform: translateX(-20px);
 
   display: flex;
   align-items: center;
@@ -461,7 +460,7 @@ button {
 
 .graph>.graph-body>div.gridline.v {
   position: absolute;
-  height: calc(100% + 20px);
+  height: 100%;
   width: 2px;
   top: 0;
   background-color: var(--grey);
@@ -469,6 +468,15 @@ button {
   display: flex;
   align-items: end;
   justify-content: center;
+}
+
+.graph>.graph-body>div.gridline.v.marker {
+  height: calc(100% + 20px) !important;
+}
+
+.graph>.graph-body>div.gridline.h.marker {
+  width: calc(100% + 20px) !important;
+  transform: translateX(-20px);
 }
 
 .graph>svg {

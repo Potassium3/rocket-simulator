@@ -6,6 +6,7 @@ let rocket = {
       height: 40,
       hollow: false,
       thickness: 0,
+      density: 15,
     },
     {
       topWidth: 40,
@@ -13,6 +14,7 @@ let rocket = {
       height: 80,
       hollow: true,
       thickness: 2,
+      density: 15,
     },
     {
       topWidth: 40,
@@ -20,6 +22,7 @@ let rocket = {
       height: 30,
       hollow: true,
       thickness: 2,
+      density: 15,
     },
     {
       topWidth: 60,
@@ -27,6 +30,7 @@ let rocket = {
       height: 100,
       hollow: true,
       thickness: 2,
+      density: 15,
     },
   ],
   fins: {
@@ -224,15 +228,17 @@ function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
   // Draw grid lines
   for (let i=1; i<Math.ceil(yMax/scaleInterval(yMax)[0]); i++) {
     let lineh = document.createElement("div");
-    lineh.className = "gridline h";
-    lineh.innerText = i%(scaleInterval(yMax)[1]/scaleInterval(yMax)[0])==0 ? Math.floor(scaleInterval(yMax)[0]*i*10000)/10000 : "";
+    let marker = i%(scaleInterval(yMax)[1]/scaleInterval(yMax)[0])==0;
+    lineh.className = "gridline h"+(marker?" marker":"");
+    lineh.innerText = marker ? Math.floor(scaleInterval(yMax)[0]*i*10000)/10000 : "";
     lineh.style.top = (1-scaleInterval(yMax)[0]*i/yMax)*scale+"px";
     graphBody.appendChild(lineh);
   }
   for (let i=1; i<Math.ceil(xMax/scaleInterval(xMax)[0]); i++) {
     let linev = document.createElement("div");
-    linev.className = "gridline v";
-    linev.innerText = i%(scaleInterval(xMax)[1]/scaleInterval(xMax)[0])==0 ? Math.floor(scaleInterval(xMax)[0]*i*10000)/10000 : "";
+    let marker = i%(scaleInterval(xMax)[1]/scaleInterval(xMax)[0])==0;
+    linev.className = "gridline v"+(marker?" marker":"");
+    linev.innerText = marker ? Math.floor(scaleInterval(xMax)[0]*i*10000)/10000 : "";
     linev.style.left = (scaleInterval(xMax)[0]*i/xMax)*scale+"px";
     graphBody.appendChild(linev);
   }
