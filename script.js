@@ -107,10 +107,6 @@ function renderRocketLong(data, zoom=1) {
           <input data-id="piece-le-${i}" class="rocket-input left-input" value="${piece.height}">
           <input data-id="piece-tr-${i}" class="rocket-input topright-input" value="${piece.topWidth}">
           <input data-id="piece-br-${i}" class="rocket-input bottomright-input" value="${piece.bottomWidth}">`;
-        pieceElem.addEventListener("click", function () {
-          rocket.fins.position = iCopy;
-          renderRocket(rocket);
-        });
         elem.appendChild(pieceElem);
         i++;
       }
@@ -186,6 +182,24 @@ function renderRocket(data) {
   renderRocketCross(data, zoom1); // Cross-section view, fins
 }
 
+function map(old, oldMin, oldMax, newMin, newMax) {
+  let proportion = (old - oldMin)/(oldMax - oldMin);
+  return newMin + proportion * (newMax - newMin);
+}
+
+function scaleInterval(maxValue) {
+  // Graph grid line spacing
+  let belowPowerOfTen = 10**Math.floor(Math.log10(maxValue));
+  let ratio = maxValue / belowPowerOfTen;
+  if (ratio < 2) {
+    return [belowPowerOfTen/10, belowPowerOfTen/2];
+  } else if (ratio < 5) {
+    return [belowPowerOfTen/5, belowPowerOfTen/1];
+  } else {
+    return [belowPowerOfTen/2, belowPowerOfTen/0.5];
+  }
+}
+
 function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
   document.querySelector("#graph-rocket>.x-label").innerText = xName;
   document.querySelector("#graph-rocket>.y-label").innerText = yName;
@@ -201,17 +215,42 @@ function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
   }
   let graphBody = document.querySelector("#graph-rocket>.graph-body");
   let graphSVG = document.querySelector("#graph-rocket>svg");
+  graphBody.innerHTML = "";
+  graphSVG.innerHTML = "";
   const scale = graphBody.clientWidth;
   graphSVG.style.height = scale+"px";
   graphBody.style.height = scale+"px";
+
+  // Draw grid lines
+  for (let i=1; i<Math.ceil(yMax/scaleInterval(yMax)[0]); i++) {
+    let lineh = document.createElement("div");
+    lineh.className = "gridline h";
+    lineh.innerText = Math.floor(scaleInterval(yMax)[0]*i*10000)/10000;
+    lineh.style.top = (1-scaleInterval(yMax)[0]*i/yMax)*scale+"px";
+    graphBody.appendChild(lineh);
+  }
+  for (let i=1; i<Math.ceil(xMax/scaleInterval(xMax)[0]); i++) {
+    let linev = document.createElement("div");
+    linev.className = "gridline v";
+    linev.innerText = Math.floor(scaleInterval(xMax)[0]*i*10000)/10000;
+    linev.style.left = (scaleInterval(xMax)[0]*i/xMax)*scale+"px";
+    graphBody.appendChild(linev);
+  }
+  console.log("X scale interval: "+scaleInterval(xMax));
+  console.log("Y scale interval: "+scaleInterval(yMax));
+
   for (let i=0; i<xList.length; i++) {
-    let point = document.createElement("div");
     let y = (1-yList[i]/yMax)*scale;
     let x = (xList[i]/xMax)*scale;
+
+    let point = document.createElement("div");
+    point.className = "point";
     point.style.top = y+"px";
     point.style.left = x+"px";
+
     graphBody.appendChild(point);
-    // Draw lines
+
+    // Draw lines between
     if (i > 0) {
       let y2 = (1-yList[i-1]/yMax)*scale;
       let x2 = (xList[i-1]/xMax)*scale;
@@ -223,8 +262,8 @@ function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
 // Simulator
 
 function simulate(data) {
-  const timeSteps = 30;
-  const timeStep = 0.1; // s
+  const timeSteps = 200;
+  const timeStep = 0.10; // s
   const speedOfSound = 343; // m s^-1
 
   let maxRadius = 0;
@@ -276,13 +315,13 @@ function simulate(data) {
 
   // Initial results
   let results = {
-    x: [x],
-    y: [y],
-    xvel: [xVel],
-    yvel: [yVel],
-    dragF: [-1],
+    x: [0],
+    y: [0],
+    xvel: [0],
+    yvel: [0],
+    dragF: [null],
     time: [0],
-    velocity: [Math.hypot(20, 20)],
+    velocity: [0],
   }
   for (let i=0; i<timeSteps; i++) {
     let t = i * timeStep;
@@ -301,9 +340,15 @@ function simulate(data) {
     resultantForceY -= 9.8 * mass;
     xVel += (resultantForceX / mass) * timeStep; // a = F / m
     yVel += (resultantForceY / mass) * timeStep; // a = F / m
+    if (y+(yVel*timeStep) < 0) {
+      if (i == 0) {
+        console.log("Rocket failed to launch.");
+      }
+      break; // Stop when rocket hits the ground
+    }
     x += xVel * timeStep;
     y += yVel * timeStep;
-    veloctiy = Math.hypot(xVel, yVel);
+    velocity = Math.hypot(xVel, yVel);
     results.x.push(x);
     results.y.push(y);
     results.xvel.push(xVel);
@@ -312,8 +357,7 @@ function simulate(data) {
     results.velocity.push(velocity);
     results.time.push(t);
   }
-  console.log(results.x);
-  plotGraph("x", "y", results.x, results.y);
+  return results;
 }
 
 // Event listeners
@@ -323,6 +367,19 @@ document.getElementById("input-body-shape-zoom").addEventListener("input", funct
   document.getElementById("input-body-shape-zoom-slider").style.transform = "translateX(-"+this.value+"%)";
   renderRocketLong(rocket, this.value/100);
   renderRocketCross(rocket, this.value/100);
+});
+
+document.getElementById("button-thrust-graph-traject").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("x", "y", results.x, results.y);
+});
+document.getElementById("button-thrust-graph-drag").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("t", "drag force", results.time, results.dragF);
+});
+document.getElementById("button-thrust-graph-vel").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("t", "velocity", results.time, results.velocity);
 });
 
 let elem = document.getElementById("input-body-shape-zoom");
@@ -353,5 +410,3 @@ document.getElementById("input-fins-shape-width").addEventListener("input", func
 // Render the rockets
 
 renderRocket(rocket);
-
-simulate(rocket);
