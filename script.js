@@ -42,6 +42,14 @@ let rocket = {
   },
 };
 
+if (window.localStorage.getItem("rocket-data")) {
+  rocket = JSON.parse(window.localStorage.getItem("rocket-data"));
+}
+
+setInterval(function() {
+  window.localStorage.setItem("rocket-data", JSON.stringify(rocket));
+}, 1000);
+
 // Interface and graphics
 
 function renderRocketLong(data, zoom=1) {
