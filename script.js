@@ -201,8 +201,8 @@ function scaleInterval(maxValue) {
 }
 
 function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
-  document.querySelector("#graph-rocket>.x-label").innerText = xName;
-  document.querySelector("#graph-rocket>.y-label").innerText = yName;
+  document.querySelector("#graph-rocket>.x-label").innerHTML = xName;
+  document.querySelector("#graph-rocket>.y-label").innerHTML = yName;
   let xMax = 0;
   let yMax = 0;
   for (let i=0; i<xList.length; i++) {
@@ -225,14 +225,14 @@ function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
   for (let i=1; i<Math.ceil(yMax/scaleInterval(yMax)[0]); i++) {
     let lineh = document.createElement("div");
     lineh.className = "gridline h";
-    lineh.innerText = Math.floor(scaleInterval(yMax)[0]*i*10000)/10000;
+    lineh.innerText = i%(scaleInterval(yMax)[1]/scaleInterval(yMax)[0])==0 ? Math.floor(scaleInterval(yMax)[0]*i*10000)/10000 : "";
     lineh.style.top = (1-scaleInterval(yMax)[0]*i/yMax)*scale+"px";
     graphBody.appendChild(lineh);
   }
   for (let i=1; i<Math.ceil(xMax/scaleInterval(xMax)[0]); i++) {
     let linev = document.createElement("div");
     linev.className = "gridline v";
-    linev.innerText = Math.floor(scaleInterval(xMax)[0]*i*10000)/10000;
+    linev.innerText = i%(scaleInterval(xMax)[1]/scaleInterval(xMax)[0])==0 ? Math.floor(scaleInterval(xMax)[0]*i*10000)/10000 : "";
     linev.style.left = (scaleInterval(xMax)[0]*i/xMax)*scale+"px";
     graphBody.appendChild(linev);
   }
@@ -328,7 +328,12 @@ function simulate(data) {
     let airDensity = 1.225; // kg m^-3 - will change at each time step
     let velocity = Math.hypot(xVel, yVel);
     let angle = Math.atan(yVel / xVel);
-    let dragForce = 0.5 * airDensity * velocity**2 * dragCoefficient * referenceArea;
+    let dragForce = 0;
+    if (velocity < speedOfSound) {
+      dragForce = 0.5 * airDensity * velocity**2 * dragCoefficient * referenceArea;
+    } else {
+      dragForce = 0.5 * airDensity * velocity**2 * superDragCoefficient * referenceArea;
+    }
     let resultantForceX = 0;
     let resultantForceY = 0;
     // Thrust
@@ -371,15 +376,15 @@ document.getElementById("input-body-shape-zoom").addEventListener("input", funct
 
 document.getElementById("button-thrust-graph-traject").addEventListener("click", function() {
   let results = simulate(rocket);
-  plotGraph("x", "y", results.x, results.y);
+  plotGraph("Horizontal displacement (m)", "Vertical displacement (m)", results.x, results.y);
 });
 document.getElementById("button-thrust-graph-drag").addEventListener("click", function() {
   let results = simulate(rocket);
-  plotGraph("t", "drag force", results.time, results.dragF);
+  plotGraph("Time (s)", "Drag force (N)", results.time, results.dragF);
 });
 document.getElementById("button-thrust-graph-vel").addEventListener("click", function() {
   let results = simulate(rocket);
-  plotGraph("t", "velocity", results.time, results.velocity);
+  plotGraph("Time (s)", "Velocity Magnitude (m s<sup>-1</sup>)", results.time, results.velocity);
 });
 
 let elem = document.getElementById("input-body-shape-zoom");
