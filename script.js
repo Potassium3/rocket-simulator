@@ -1,4 +1,5 @@
 let rocket = {
+  mass: 0.2,
   shape: [
     {
       topWidth: 0,
@@ -39,6 +40,9 @@ let rocket = {
     shape: "triangle",
     thickness: 10,
     bottomWidth: 40,
+  },
+  launch: {
+    velocity: 20,
   },
 };
 
@@ -323,8 +327,8 @@ function simulate(data) {
   // Simulate the time steps
   let x = 0;
   let y = 0;
-  let xVel = 20; // m s^-1 - CHANGE THIS!!!
-  let yVel = 20;
+  let xVel = data.launch.velocity*Math.SQRT2/2; // m s^-1 - CHANGE THIS!!!
+  let yVel = data.launch.velocity*Math.SQRT2/2;
   let mass = 0.1; // kg - CHANGE THIS!!!
 
   // Initial results
@@ -400,6 +404,26 @@ document.getElementById("button-thrust-graph-vel").addEventListener("click", fun
   let results = simulate(rocket);
   plotGraph("Time (s)", "Velocity Magnitude (m s<sup>-1</sup>)", results.time, results.velocity);
 });
+document.getElementById("button-thrust-graph-ytime").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("Time (s)", "Vertical displacement (m)", results.time, results.y);
+});
+document.getElementById("button-thrust-graph-xtime").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("Time (s)", "Horizontal displacement (m)", results.time, results.x);
+});
+document.getElementById("button-thrust-graph-yvel").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("Time (s)", "Vertical Velocity (m s<sup>-1</sup>)", results.time, results.yvel);
+});
+document.getElementById("button-thrust-graph-xvel").addEventListener("click", function() {
+  let results = simulate(rocket);
+  plotGraph("Time (s)", "Horizontal Velocity (m s<sup>-1</sup>)", results.time, results.xvel);
+});
+
+document.getElementById("delete-cache").addEventListener("click", function() {
+  window.localStorage.removeItem("rocket-data");
+});
 
 let elem = document.getElementById("input-body-shape-zoom");
 document.getElementById("input-body-shape-zoom-slider").style.left = elem.value+"%";
@@ -423,6 +447,11 @@ document.getElementById("input-fins-shape-width").addEventListener("input", func
   document.getElementById("input-fins-shape-width-slider").style.left = this.value+"%";
   document.getElementById("input-fins-shape-width-slider").style.transform = "translateX(-"+this.value+"%)";
   rocket.fins.bottomWidth = Number(this.value);
+  renderRocket(rocket);
+});
+
+document.getElementById("input-thrust-forces-launch").addEventListener("input", function() {
+  rocket.launch.velocity = Number(this.value);
   renderRocket(rocket);
 });
 

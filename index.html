@@ -33,7 +33,7 @@
     <div id="launch">
       <div class="img-go"></div>
       Launch
-      <input type="radio" name="menu" id="r-launch" checked>
+      <input type="radio" name="menu" id="r-launch">
     </div>
   </header>
   <main>
@@ -53,6 +53,7 @@
           <!-- Javascript -->
         </div>
         <p>Total mass: 0.200kg</p>
+        <p>The nose must be cone shaped, and widths must match across pieces.</p>
       </div>
       <div class="panel">
         <h2>Stability</h2>
@@ -110,28 +111,41 @@
     <section id="p-thrust">
       <div class="panel">
         <h2>Forces</h2>
+        <div class="input input-number">
+          Starting velocity
+          <div>
+            <input id="input-thrust-forces-launch">
+          </div>
+        </div>
         <p>Not implemented yet. Launch force and engine thrust.</p>
       </div>
       <div class="panel">
         <h2>Stages</h2>
         <p>Not implemented yet.</p>
+        <button id="delete-cache">Delete Cache</button>
       </div>
     </section>
     <section id="p-launch">
       <div class="panel">
         <h2>Graph</h2>
+        <p>Choose x axis.</p>
+        <p>Choose y axis.</p>
+        <p>Draw button.</p>
+        <button id="button-thrust-graph-traject">Trajectory</button>
+        <button id="button-thrust-graph-drag">DragForce-Time</button>
+        <button id="button-thrust-graph-vel">Velocity-Time</button>
+        <button id="button-thrust-graph-xtime">Xdisplacement-Time</button>
+        <button id="button-thrust-graph-ytime">Ydisplacement-Time</button>
+        <button id="button-thrust-graph-yvel">Yvel-Time</button>
+        <button id="button-thrust-graph-xvel">Xvel-Time</button>
+      </div>
+      <div class="panel">
         <div class="graph" id="graph-rocket">
           <div class="graph-body"></div>
           <div class="x-label">X-axis</div>
           <div class="y-label">Y-axis</div>
           <svg></svg>
         </div>
-        <p>Choose x axis.</p>
-        <p>Choose y axis.</p>
-        <p>Draw button.</p>
-        <button id="button-thrust-graph-traject">Trajectory</button>
-        <button id="button-thrust-graph-drag">Drag Force</button>
-        <button id="button-thrust-graph-vel">Velocity-Time</button>
       </div>
     </section>
   </main>
