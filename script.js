@@ -327,9 +327,9 @@ function simulate(data) {
   // Simulate the time steps
   let x = 0;
   let y = 0;
-  let xVel = data.launch.velocity*Math.SQRT2/2; // m s^-1 - CHANGE THIS!!!
+  let xVel = data.launch.velocity*Math.SQRT2/2; // m s^-1
   let yVel = data.launch.velocity*Math.SQRT2/2;
-  let mass = 0.1; // kg - CHANGE THIS!!!
+  let mass = data.mass; // kg
 
   // Initial results
   let results = {
