@@ -194,6 +194,8 @@ function renderRocketCross(data, zoom=1) {
 function renderNumberInputs(data) {
   document.getElementById("input-body-shape-mass").value = String(data.mass);
   document.getElementById("input-thrust-forces-launch").value = String(data.launch.velocity);
+  document.getElementById("output-fins-angle-thickness").innerText = String(data.fins.thickness);
+  document.getElementById("output-fins-shape-width").innerText = String(data.fins.bottomWidth);
 }
 
 function renderRocket(data) {
@@ -346,6 +348,9 @@ function simulate(data) {
     dragF: [null],
     time: [0],
     velocity: [0],
+    maxheight: 0,
+    finaldisplace: 0,
+    flighttime: 0,
   }
   for (let i=0; i<timeSteps; i++) {
     let t = i * timeStep;
@@ -373,10 +378,15 @@ function simulate(data) {
       if (i == 0) {
         console.log("Rocket failed to launch.");
       }
+      results.flighttime = t;
+      results.finaldisplace = x;
       break; // Stop when rocket hits the ground
     }
     x += xVel * timeStep;
     y += yVel * timeStep;
+    if (y > results.maxheight) {
+      results.maxheight = y;
+    }
     velocity = Math.hypot(xVel, yVel);
     results.x.push(x);
     results.y.push(y);
@@ -386,6 +396,9 @@ function simulate(data) {
     results.velocity.push(velocity);
     results.time.push(t);
   }
+  document.getElementById("output-launch-graph-height").innerText = Math.round(results.maxheight*10)/10;
+  document.getElementById("output-launch-graph-finaldisp").innerText = Math.round(results.finaldisplace*10)/10;
+  document.getElementById("output-launch-graph-flighttime").innerText = Math.round(results.flighttime*10)/10;
   return results;
 }
 
@@ -458,12 +471,10 @@ document.getElementById("input-fins-shape-width").addEventListener("input", func
 
 document.getElementById("input-thrust-forces-launch").addEventListener("input", function() {
   rocket.launch.velocity = Number(this.value);
-  renderRocket(rocket);
 });
 
 document.getElementById("input-body-shape-mass").addEventListener("input", function() {
   rocket.mass = Number(this.value);
-  renderRocket(rocket);
 });
 
 // Render the rockets

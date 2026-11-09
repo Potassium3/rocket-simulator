@@ -53,7 +53,7 @@
           <!-- Javascript -->
         </div>
         <div class="input input-number">
-          Total mass (kg)
+          <p>Total mass (kg)</p>
           <div>
             <input id="input-body-shape-mass">
           </div>
@@ -72,7 +72,7 @@
       <div class="panel">
         <h2>Shape</h2>
         <div class="input input-range">
-          Width
+          <p>Width <strong id="output-fins-shape-width"></strong>mm</p>
           <div>
             <div id="input-fins-shape-width-slider"></div>
             <input id="input-fins-shape-width" type="range" min="0" max="100">
@@ -80,7 +80,7 @@
           </div>
         </div>
         <div class="input input-range">
-          Fin Shape
+          <p>Fin Shape</p>
           <div>
             <div id="input-fins-shape-shape-slider"></div>
             <input id="input-fins-shape-shape" type="range" min="0" max="100">
@@ -94,7 +94,7 @@
       <div class="panel">
         <h2>Angle</h2>
         <div class="input input-range">
-          Fins
+          <p>Fins</p>
           <div>
             <div id="input-fins-angle-fins-slider"></div>
             <input id="input-fins-angle-fins" type="range" min="0" max="6">
@@ -102,7 +102,7 @@
           </div>
         </div>
         <div class="input input-range">
-          Thickness
+          <p>Thickness <strong id="output-fins-angle-thickness"></strong>mm</p>
           <div>
             <div id="input-fins-angle-thickness-slider"></div>
             <input id="input-fins-angle-thickness" type="range" min="0" max="100">
@@ -118,7 +118,7 @@
       <div class="panel">
         <h2>Forces</h2>
         <div class="input input-number">
-          Starting velocity
+          <p>Starting velocity (m s<sup>-1</sup>)</p>
           <div>
             <input id="input-thrust-forces-launch">
           </div>
@@ -152,11 +152,14 @@
           <div class="y-label">Y-axis</div>
           <svg></svg>
         </div>
+        <p>Max height: <strong id="output-launch-graph-height">?</strong>m</p>
+        <p>Final displacement: <strong id="output-launch-graph-finaldisp">?</strong>m</p>
+        <p>Flight time: <strong id="output-launch-graph-flighttime">?</strong>s</p>
       </div>
     </section>
   </main>
   <div class="input input-range">
-    Zoom
+    <p>Zoom</p>
     <div>
       <div id="input-body-shape-zoom-slider"></div>
       <input id="input-body-shape-zoom" type="range" min="0" max="100">
