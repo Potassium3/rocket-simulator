@@ -133,11 +133,11 @@ function renderRocketLong(data, zoom=1) {
           let sel = elem.selectionStart;
           let zoomLocal = document.getElementById("input-body-shape-zoom").value/100;
           if (elem.dataset.id.substring(6, 8) == "le") {
-            rocket.shape[Number(elem.dataset.id.substring(9))].height = elem.value;
+            rocket.shape[Number(elem.dataset.id.substring(9))].height = Number(elem.value);
           } else if (elem.dataset.id.substring(6, 8) == "tr") {
-            rocket.shape[Number(elem.dataset.id.substring(9))].topWidth = elem.value;
+            rocket.shape[Number(elem.dataset.id.substring(9))].topWidth = Number(elem.value);
           } else if (elem.dataset.id.substring(6, 8) == "br") {
-            rocket.shape[Number(elem.dataset.id.substring(9))].bottomWidth = elem.value;
+            rocket.shape[Number(elem.dataset.id.substring(9))].bottomWidth = Number(elem.value);
           }
           renderRocketLong(rocket, zoomLocal);
           renderRocket3D(rocket);
@@ -191,9 +191,15 @@ function renderRocketCross(data, zoom=1) {
   })
 }
 
+function renderNumberInputs(data) {
+  document.getElementById("input-body-shape-mass").value = String(data.mass);
+  document.getElementById("input-thrust-forces-launch").value = String(data.launch.velocity);
+}
+
 function renderRocket(data) {
   let zoom1 = document.getElementById("input-body-shape-zoom").value/100;
   renderRocket3D(data); // 3D View
+  renderNumberInputs(data);
   renderRocketLong(data, zoom1); // Long view, editor, fins
   renderRocketCross(data, zoom1); // Cross-section view, fins
 }
@@ -452,6 +458,11 @@ document.getElementById("input-fins-shape-width").addEventListener("input", func
 
 document.getElementById("input-thrust-forces-launch").addEventListener("input", function() {
   rocket.launch.velocity = Number(this.value);
+  renderRocket(rocket);
+});
+
+document.getElementById("input-body-shape-mass").addEventListener("input", function() {
+  rocket.mass = Number(this.value);
   renderRocket(rocket);
 });
 
