@@ -42,7 +42,9 @@ let rocket = {
     bottomWidth: 40,
   },
   launch: {
-    velocity: 20,
+    force: 300,
+    forceduration: 0.03,
+    angleFromHoriz: 45,
   },
 };
 
@@ -193,15 +195,22 @@ function renderRocketCross(data, zoom=1) {
 
 function renderNumberInputs(data) {
   document.getElementById("input-body-shape-mass").value = String(data.mass);
-  document.getElementById("input-thrust-forces-launch").value = String(data.launch.velocity);
+  document.getElementById("input-thrust-forces-force").value = String(data.launch.force);
+  document.getElementById("input-thrust-forces-duration").value = String(data.launch.forceduration);
+}
+
+function renderNumberOutputs(data) {
   document.getElementById("output-fins-angle-thickness").innerText = String(data.fins.thickness);
   document.getElementById("output-fins-shape-width").innerText = String(data.fins.bottomWidth);
+  let initialVelocity = data.launch.force * data.launch.forceduration / data.mass;
+  document.getElementById("output-thrust-forces-start").innerText = String(Math.round(initialVelocity*10)/10);
 }
 
 function renderRocket(data) {
   let zoom1 = document.getElementById("input-body-shape-zoom").value/100;
   renderRocket3D(data); // 3D View
   renderNumberInputs(data);
+  renderNumberOutputs(data);
   renderRocketLong(data, zoom1); // Long view, editor, fins
   renderRocketCross(data, zoom1); // Cross-section view, fins
 }
@@ -289,7 +298,7 @@ function plotGraph(xName="X-axis", yName="Y-axis", xList, yList) {
 
 function simulate(data) {
   const timeSteps = 200;
-  const timeStep = 0.10; // s
+  const timeStep = 0.1; // s
   const speedOfSound = 343; // m s^-1
 
   let maxRadius = 0;
@@ -305,9 +314,9 @@ function simulate(data) {
   // Calculate drag coefficient
   for (let piece of data.shape) {
     let difference = Math.abs(piece.topWidth - piece.bottomWidth);
-    let angleRelativeToCentreLine = Math.atan(difference/2 / piece.height);
+    let angleRelativeToCentreLine = piece.height == 0 ? Math.PI/2 : Math.atan(difference/2 / piece.height);
     // Drag coefficient calculations
-    if (piece.topWidth == 0) {
+    if (piece.topWidth == 0 || piece.bottomWidth == 0) {
       // Cone
       superDragCoefficient += 2 * Math.sin(angleRelativeToCentreLine)**2;
       dragCoefficient += 0.15;
@@ -324,20 +333,23 @@ function simulate(data) {
         superDragCoefficient += 2 * Math.sin(angleRelativeToCentreLine)**2;
         dragCoefficient += 0.15;
       } else {
-        dragCoefficient -= 0.1
-        superDragCoefficient -= 0.1
+        dragCoefficient -= 0.1;
+        superDragCoefficient -= 0.1;
       }
     }
   }
   // Base drag
   dragCoefficient += 0.029/Math.sqrt(dragCoefficient); // Approx 0.12 or 0.15
-
+  console.log("Drag Coeff: "+dragCoefficient);
+  console.log("Super drag Coeff: "+superDragCoefficient);
+  console.log("Reference Area: "+referenceArea);
   // Simulate the time steps
   let x = 0;
   let y = 0;
-  let xVel = data.launch.velocity*Math.SQRT2/2; // m s^-1
-  let yVel = data.launch.velocity*Math.SQRT2/2;
-  let mass = data.mass; // kg
+  let initialVelocity = data.launch.force * data.launch.forceduration / data.mass;
+  let xVel = initialVelocity*Math.SQRT2/2; // m s^-1
+  let yVel = initialVelocity*Math.SQRT2/2;
+  let mass = Math.max(data.mass, 0.01); // kg
 
   // Initial results
   let results = {
@@ -352,11 +364,12 @@ function simulate(data) {
     finaldisplace: 0,
     flighttime: 0,
   }
+
   for (let i=0; i<timeSteps; i++) {
     let t = i * timeStep;
     let airDensity = 1.225; // kg m^-3 - will change at each time step
     let velocity = Math.hypot(xVel, yVel);
-    let angle = Math.atan(yVel / xVel);
+    let angle = Math.atan2(yVel, xVel);
     let dragForce = 0;
     if (velocity < speedOfSound) {
       dragForce = 0.5 * airDensity * velocity**2 * dragCoefficient * referenceArea;
@@ -396,6 +409,7 @@ function simulate(data) {
     results.velocity.push(velocity);
     results.time.push(t);
   }
+  
   document.getElementById("output-launch-graph-height").innerText = Math.round(results.maxheight*10)/10;
   document.getElementById("output-launch-graph-finaldisp").innerText = Math.round(results.finaldisplace*10)/10;
   document.getElementById("output-launch-graph-flighttime").innerText = Math.round(results.flighttime*10)/10;
@@ -458,7 +472,7 @@ document.getElementById("input-fins-angle-fins").addEventListener("input", funct
 document.getElementById("input-fins-angle-thickness").addEventListener("input", function() {
   document.getElementById("input-fins-angle-thickness-slider").style.left = this.value+"%";
   document.getElementById("input-fins-angle-thickness-slider").style.transform = "translateX(-"+this.value+"%)";
-  rocket.fins.thickness = Number(this.value);
+  rocket.fins.thickness = Number(this.value)/5;
   renderRocket(rocket);
 });
 
@@ -469,13 +483,25 @@ document.getElementById("input-fins-shape-width").addEventListener("input", func
   renderRocket(rocket);
 });
 
-document.getElementById("input-thrust-forces-launch").addEventListener("input", function() {
-  rocket.launch.velocity = Number(this.value);
+document.getElementById("input-thrust-forces-force").addEventListener("input", function() {
+  rocket.launch.force = Number(this.value);
+  renderNumberOutputs(rocket);
+});
+
+document.getElementById("input-thrust-forces-duration").addEventListener("input", function() {
+  rocket.launch.forceduration = Number(this.value);
+  renderNumberOutputs(rocket);
 });
 
 document.getElementById("input-body-shape-mass").addEventListener("input", function() {
   rocket.mass = Number(this.value);
+  renderNumberOutputs(rocket);
 });
+
+document.getElementById("button-body-shape-delete").addEventListener("click", function() {
+  rocket.shape.pop();
+  renderRocket(rocket);
+})
 
 // Render the rockets
 

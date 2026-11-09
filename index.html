@@ -52,6 +52,8 @@
         <div class="rocket rocket-long">
           <!-- Javascript -->
         </div>
+
+        <button id="button-body-shape-delete">-</button>
         <div class="input input-number">
           <p>Total mass (kg)</p>
           <div>
@@ -118,11 +120,18 @@
       <div class="panel">
         <h2>Forces</h2>
         <div class="input input-number">
-          <p>Starting velocity (m s<sup>-1</sup>)</p>
+          <p>Initial force (N)</p>
           <div>
-            <input id="input-thrust-forces-launch">
+            <input id="input-thrust-forces-force">
           </div>
         </div>
+        <div class="input input-number">
+          <p>Duration of force (s)</p>
+          <div>
+            <input id="input-thrust-forces-duration">
+          </div>
+        </div>
+        <p>Initial velocity: <strong id="output-thrust-forces-start">?</strong>m/s</p>
         <p>Not implemented yet. Launch force and engine thrust.</p>
       </div>
       <div class="panel">
