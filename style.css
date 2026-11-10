@@ -254,6 +254,18 @@ button {
   overflow: auto;
 }
 
+.rocket .centredot {
+  position: absolute;
+  left: 50%;
+  height: 20px;
+  width: 20px;
+  transform: translate(-50%, -50%);
+  background-color: var(--red);
+  border-radius: 100%;
+  padding-top: 20px;
+  user-select: none;
+}
+
 .rocket .piece {
   position: relative;
   width: 100%;

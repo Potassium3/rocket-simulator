@@ -58,6 +58,26 @@ setInterval(function() {
 
 // Interface and graphics
 
+function calculateCentreMass(data) {
+  let sum = 0;
+  let freq = 0;
+  let cumulPos = 0;
+  for (let piece of data.shape) {
+    let pos = 0;
+    if (piece.topWidth == 0) {
+      pos = piece.height*3/4;
+    } else if (piece.bottomWidth == 0) {
+      pos = piece.height/4;
+    } else if (piece.topWidth == piece.bottomWidth) {
+      pos = piece.height/2;
+    }
+    sum += cumulPos+pos;
+    freq += 1;
+    cumulPos += piece.height;
+  }
+  return sum/freq; // mm
+}
+
 function renderRocketLong(data, zoom=1) {
   document.querySelectorAll(".rocket-long").forEach((elem) => {
     if (elem.classList.contains("fins")) {
@@ -128,6 +148,11 @@ function renderRocketLong(data, zoom=1) {
         elem.appendChild(pieceElem);
         i++;
       }
+      let centreDot = document.createElement("div");
+      centreDot.className = "centredot";
+      centreDot.style.top = (calculateCentreMass(data)*zoom)+"mm";
+      centreDot.innerHTML = "C<sub>m</sub>"
+      elem.appendChild(centreDot);
       
       // Add event listeners for input
       document.querySelectorAll(".rocket-input").forEach((elem) => {
