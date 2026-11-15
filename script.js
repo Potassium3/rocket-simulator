@@ -1,5 +1,6 @@
 let rocket = {
-  mass: 0.2,
+  name: "Default stomp rocket",
+  mass: 0.01,
   shape: [
     {
       topWidth: 0,
@@ -8,6 +9,7 @@ let rocket = {
       hollow: false,
       thickness: 0,
       density: 15,
+      mass: 0.2,
     },
     {
       topWidth: 40,
@@ -16,6 +18,7 @@ let rocket = {
       hollow: true,
       thickness: 2,
       density: 15,
+      mass: 0.2,
     },
     {
       topWidth: 40,
@@ -24,6 +27,7 @@ let rocket = {
       hollow: true,
       thickness: 2,
       density: 15,
+      mass: 0.2,
     },
     {
       topWidth: 60,
@@ -32,6 +36,7 @@ let rocket = {
       hollow: true,
       thickness: 2,
       density: 15,
+      mass: 0.2,
     },
   ],
   fins: {
@@ -42,8 +47,8 @@ let rocket = {
     bottomWidth: 40,
   },
   launch: {
-    force: 300,
-    forceduration: 0.03,
+    force: 20,
+    forceduration: 0.02,
     angleFromHoriz: 45,
   },
 };
@@ -58,6 +63,10 @@ setInterval(function() {
 
 // Interface and graphics
 
+function renderMaterials() {
+
+}
+
 function calculateCentreMass(data) {
   let sum = 0;
   let freq = 0;
@@ -70,9 +79,11 @@ function calculateCentreMass(data) {
       pos = piece.height/4;
     } else if (piece.topWidth == piece.bottomWidth) {
       pos = piece.height/2;
+    } else {
+      pos = piece.height*(3*(piece.bottomWidth**2/4) + piece.bottomWidth*piece.topWidth/2 + (piece.topWidth**2/4)) / (4*((piece.bottomWidth**2/4) + piece.bottomWidth*piece.topWidth/4 + (piece.topWidth**2/4)))
     }
-    sum += cumulPos+pos;
-    freq += 1;
+    sum += cumulPos+(pos*piece.mass); // Weighted average
+    freq += piece.mass;
     cumulPos += piece.height;
   }
   return sum/freq; // mm
@@ -147,6 +158,10 @@ function renderRocketLong(data, zoom=1) {
           <input data-id="piece-br-${i}" class="rocket-input bottomright-input" value="${piece.bottomWidth}">`;
         elem.appendChild(pieceElem);
         i++;
+        // Add event listeners for materials
+        pieceElem.addEventListener("click", function () {
+          renderMaterials(data, iCopy);
+        });
       }
       let centreDot = document.createElement("div");
       centreDot.className = "centredot";
@@ -156,8 +171,7 @@ function renderRocketLong(data, zoom=1) {
       
       // Add event listeners for input
       document.querySelectorAll(".rocket-input").forEach((elem) => {
-        elem.addEventListener("input", function() {
-          let sel = elem.selectionStart;
+        elem.addEventListener("focusout", function() {
           let zoomLocal = document.getElementById("input-body-shape-zoom").value/100;
           if (elem.dataset.id.substring(6, 8) == "le") {
             rocket.shape[Number(elem.dataset.id.substring(9))].height = Number(elem.value);
@@ -169,8 +183,6 @@ function renderRocketLong(data, zoom=1) {
           renderRocketLong(rocket, zoomLocal);
           renderRocket3D(rocket);
           renderRocketCross(rocket, zoomLocal);
-          document.querySelector(`[data-id="${elem.dataset.id}"]`).focus();
-          document.querySelector(`[data-id="${elem.dataset.id}"]`).selectionStart = sel;
         })
       })
     }

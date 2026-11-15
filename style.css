@@ -9,7 +9,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  --red: #e28711; /* Not red anymore! */
+  --red: #1195e2; /* Not red anymore! */
   --white: #ffffff;
   --grey: #444444;
   background-color: black;
@@ -258,12 +258,11 @@ button {
   position: absolute;
   left: 50%;
   height: 20px;
-  width: 20px;
-  transform: translate(-50%, -50%);
-  background-color: var(--red);
-  border-radius: 100%;
-  padding-top: 20px;
+  width: 30px;
+  transform: translate(-50%, -1%);
+  border-top: 2px solid white;
   user-select: none;
+  text-align: center;
 }
 
 .rocket .piece {
